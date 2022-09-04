@@ -13,3 +13,4 @@ app = FastAPI(
 )
 
 app.include_router(user) # Incluimos las rutas de user del archivo user.py
+
