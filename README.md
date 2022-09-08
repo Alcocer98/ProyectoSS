@@ -9,4 +9,4 @@ This project will be in Spanish for now but in a future it have the English vers
 
 - Implementación de ORM
 - Eliminación de los métodos put, delete y post
-- implementación de filtros
+- Implementación de filtros
