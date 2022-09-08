@@ -1,9 +1,12 @@
-from sqlalchemy import create_engine, MetaData 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker #Requerido para implementar ORM
+from sqlalchemy.ext.declarative import declarative_base
 
 #Create Engine requiere de una URL como localhost
 
-engine = create_engine('sqlite:///ejemplo.db',connect_args={'check_same_thread': False})
+engine = create_engine('sqlite:///ejemplo1.db') #connect_args={'check_same_thread': False}
 
-meta = MetaData()
+SessionLocal = sessionmaker(bind = engine)
 
-conn = engine.connect()
+Base = declarative_base()
+

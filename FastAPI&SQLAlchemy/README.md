@@ -18,6 +18,9 @@ Para tener las opciones de FastAPI bemeos de ir a la URL que nos proporciona uvi
 Consideraciones de los submódulos de FASTAPI:
 **APIRouter:** Permite definir rutas/subrutas por separado [Página de referencia](https://fastapi.tiangolo.com/tutorial/first-steps/)
 
-***Leer sobre:*** ORM
+# V0.0.2
 
+- Implementación de ORM
+- Eliminación de los métodos put, delete y post
+- implementación de filtros
 

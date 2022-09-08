@@ -1,49 +1,43 @@
-from fastapi import APIRouter, Response, status
-from config.db import conn # Importamos la conexión
-from models.user import users # De la carpeta models y archivo users importamos la variable users (Tabla)
-from schemas.user import User
-from starlette.status import HTTP_204_NO_CONTENT 
+from fastapi import APIRouter
+from fastapi.params import Depends
+from starlette.responses import RedirectResponse # Redireccionador a una URL deseada
+from sqlalchemy.orm import Session
+from typing import List
+from config.db import SessionLocal,engine # Importamos la conexión
+from models.user import User # De la carpeta models y archivo users importamos la variable users (Tabla)
+from schemas.user import User as scUser
 
-from cryptography.fernet import Fernet #Cifrador de contraseñas
-
-key = Fernet.generate_key() #Únicos cada uno de los cifrados que hagamos
-f = Fernet(key)
 
 user = APIRouter()
 
-#Mostramos nuestra tabla
-@user.get('/users',response_model= list[User], tags=["users"])
-def get_user():
-    return conn.execute(users.select()).fetchall() #Nuestra Querry a toda la tabla (equivalente a un SELECT * FROM)
+def get_db():
+    try:
+        db=SessionLocal()
+        yield db
+    finally:
+        db.close()
 
 
-#Añadir elementos a la BD
-@user.post('/users', response_model=User, tags=["users"]) 
-def create_user(user: User):
-    new_user = {"name":user.name,"email":user.email}
-    new_user["password"] = f.encrypt(user.password.encode("utf-8"))
-    result = conn.execute(users.insert().values(new_user)) # Guardamos en la BD
-    
-    # Vamos a ejecutar una consulta select, de la cual seleccionará donde la columna ID del usuario
-    # sea igual al último ID, y sólo el primer elemento (devuelve una lista).
-    return conn.execute(users.select().where(users.c.id == result.lastrowid)).first() 
+@user.get("/", tags=["Default"])
+def main():
+    return RedirectResponse(url="/docs")
 
 
-#Petición de un usuario muy específico
-@user.get('/users/{id}', response_model = User, tags=["users"])
-def get_user(id: str):
-    return conn.execute(users.select().where(users.c.id == id)).first() 
+# Obtenemos todos los datos de la tabla
+@user.get('/Users/',response_model=List[scUser], tags=["Users"])
+def show_user(db:Session=Depends(get_db)):
+    all_data = db.query(User).all()
+    return all_data
 
+#Obtenemos los datos ordenados por nombre
+@user.get('/Users/name',response_model=List[scUser], tags=["Users"])
+def show_sort(db:Session=Depends(get_db)):
+    target_sort = db.query(User).order_by(User.name).all() #Obtenemos todos los datos en orden por nombre
+    return target_sort
 
-#Petición de borrado
-@user.delete('/users/{id}',status_code=status.HTTP_204_NO_CONTENT, tags=["users"])
-def delete_user(id: str):
-    conn.execute(users.delete().where(users.c.id == id))
-    return Response(status_code=HTTP_204_NO_CONTENT)
-
-
-#Actualizar 
-@user.put('/users/{id}',response_model=User, tags=["users"])
-def update_user(id:str,user:User):
-    conn.execute(users.update().values(name = user.name, email = user.email, password = f.encrypt(user.password.encode("utf-8"))).where(users.c.id == id))
-    return conn.execute(users.select().where(users.c.id == id)).first()
+#Obtenemos un usuario específico
+@user.get('/Users/{id}', tags=["Users"])
+def show_sort(id:str,db:Session=Depends(get_db)):
+    target = db.query(User).filter(User.id == id).first() #Obtenemos el usuario que coincieda con el id
+    #return target
+    return target.id, target.name, target.email # Mostramos las columnas que nos interesan de todos los usuarios 
