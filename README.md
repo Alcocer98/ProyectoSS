@@ -1,7 +1,22 @@
-# Project of my social service
+# Requerimientos
 
-First view (v0.0.1), in this project I will use FastAPI and SQLAlchemy in Python as the main elements.
+Vamos a usar FastAPI, uvicorn, PyMySQL, cryptography y SQLAlchemy , es importante haber tenido un ambiente virtual creado previamente (conda, py, etc.). Para eviatr encender y apagar uvicorn por cada modificación que se haga se recomienda hacer:
 
-This project will be in Spanish for now but in a future it have the English version.
+```
+uvicorn app:app --reload
+```
+
+Posteriormente tendremos un arreglo de carpetas de la forma:
+
+- **routes:** Se guardarán las urls (funciones de ruta).
+- **models:** Se guardarán los modelos de datos usados para la base de datos. 
+- **schemas:** Definiremos los datos que se van a devolver al cliente y los que se van a recibir de este mismo.
+- **config:** Servirá para poder manejar la configuración de la conexión a la base de datos.
+- **crud:**: CRUD (create, update, delete) para usar en las "rutas" y con estos operar la bd.
+
+Para tener las opciones de FastAPI bemeos de ir a la URL que nos proporciona uvicorn añadiendo al final /docs.
+
+Consideraciones de los submódulos de FASTAPI:
+**APIRouter:** Permite definir rutas/subrutas por separado [Página de referencia](https://fastapi.tiangolo.com/tutorial/first-steps/)
 
 
