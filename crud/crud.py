@@ -1,9 +1,8 @@
-from schemas.user import User as scUser
-from models.user import User 
+from models.user import User
 from sqlalchemy.orm import Session
 
 #lista de usuarios 
-def all_users(db: Session):
+def get_users(db: Session):
     return db.query(User).all()
 
 #ordenar la bd de usarios por nombre
