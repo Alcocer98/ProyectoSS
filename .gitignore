@@ -1,4 +1,5 @@
 /__pycache__ 
 /.DS_Store
 /.proyss
-__init__.py
+/__init__.py
+/.idea
